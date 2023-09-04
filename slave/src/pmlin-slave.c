@@ -1,33 +1,33 @@
 /*
-Copyright 2023 Planmeca Oy 
+Copyright 2023 Planmeca Oy
 
 Author Kustaa Nyholm (kustaa.nyholm@planmeca.com)
 
-Redistribution and use in source and binary forms, with or without 
+Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-1. Redistributions of source code must retain the above copyright notice, 
+1. Redistributions of source code must retain the above copyright notice,
    this list of conditions and the following disclaimer.
 
-2. Redistributions in binary form must reproduce the above copyright notice, 
-   this list of conditions and the following disclaimer in the documentation 
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
    and/or other materials provided with the distribution.
 
-3. Neither the name of the copyright holder nor the names of its contributors 
-   may be used to endorse or promote products derived from this software 
+3. Neither the name of the copyright holder nor the names of its contributors
+   may be used to endorse or promote products derived from this software
    without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-ARE DISCLAIMED. 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS”
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.
 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY 
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND 
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
@@ -145,14 +145,14 @@ static void PMLIN_handle_message() {
 			fill_buffer_with_random_data(PMLIN_CMD_RESP_LEN);
 			g_PMLIN_state = PMLIN_STATE_WAIT_RENUM_TIMER;
 			// random wait time is random [0..31] * 2.0 * UART char time in microseconds
-			g_PMLIN_timer = (PMLIN_random() & 0x1F) * (uint16_t) (2.0 * 10 * 1000000.0 / PMLIN_BAURDATE);
+			g_PMLIN_timer = (PMLIN_random() & 0x1F) * (uint16_t) (2.0 * 10 * 1000000.0 / PMLIN_BAUDRATE);
 			break;
 		}
 		if (PMLIN_CMD_MSG_CMD_INQUIRE == cmd) {
             bool button = PMLIN_handle_indicator_button(//
                     PMLIN_CMD_MSG_INDCTR_ENABLE_MASK & g_PMLIN_buffer[PMLIN_CMD_MSG_INDCTR_IDX], //
                     PMLIN_CMD_MSG_INDCTR_CTRL_MASK & g_PMLIN_buffer[PMLIN_CMD_MSG_INDCTR_IDX]); //
-                    
+
 			g_PMLIN_buffer[PMLIN_CMD_RESP_DEV_TYPE_MSB_IDX] = g_PMLIN_device_type >> 8;
 			g_PMLIN_buffer[PMLIN_CMD_RESP_DEV_TYPE_LSB_IDX] = g_PMLIN_device_type & 0xFF;
 			g_PMLIN_buffer[PMLIN_CMD_RESP_FW_VER_MSB_IDX] = g_PMLIN_firmware_version >> 8;
@@ -161,7 +161,7 @@ static void PMLIN_handle_message() {
                 g_PMLIN_buffer[PMLIN_CMD_RESP_BUTTON_IDX] |= PMLIN_CMD_RESP_BUTTON_MASK;
             else
                 g_PMLIN_buffer[PMLIN_CMD_RESP_BUTTON_IDX] &= ~PMLIN_CMD_RESP_BUTTON_MASK;
-               
+
 			g_PMLIN_state = PMLIN_STATE_TX_CTRL_RESP;
 			PMLIN_UART_enable_data_register_empty_interrupt(1);
 			break;

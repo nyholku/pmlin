@@ -36,7 +36,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdint.h>
 
-#define PMLIN_BAURDATE 38400
+#define PMLIN_BAUDRATE 38400
 
 #define PMLIN_MAX_MESSAGE_TYPES 8
 
@@ -87,7 +87,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PMLIN_CMD_RESP_BUTTON_MASK 0x80
 
 #define PMLIN_RESERVED_DEVICE_TYPE 0xFFFF
-      
+
 typedef volatile struct {
 	uint8_t m_message_dir;
 	uint32_t m_message_length;

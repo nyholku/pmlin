@@ -1,33 +1,33 @@
 /*
-Copyright 2023 Planmeca Oy 
+Copyright 2023 Planmeca Oy
 
 Author Kustaa Nyholm (kustaa.nyholm@planmeca.com)
 
-Redistribution and use in source and binary forms, with or without 
+Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
-1. Redistributions of source code must retain the above copyright notice, 
+1. Redistributions of source code must retain the above copyright notice,
    this list of conditions and the following disclaimer.
 
-2. Redistributions in binary form must reproduce the above copyright notice, 
-   this list of conditions and the following disclaimer in the documentation 
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
    and/or other materials provided with the distribution.
 
-3. Neither the name of the copyright holder nor the names of its contributors 
-   may be used to endorse or promote products derived from this software 
+3. Neither the name of the copyright holder nor the names of its contributors
+   may be used to endorse or promote products derived from this software
    without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-ARE DISCLAIMED. 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS”
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.
 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY 
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND 
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
@@ -88,8 +88,8 @@ int pmlin_init_serial_port() {
 	opts.c_cc[ VMIN] = 0;
 	opts.c_cc[ VTIME] = 10; //0.1 sec
 
-	cfsetispeed(&opts, PMLIN_BAURDATE);
-	cfsetospeed(&opts, PMLIN_BAURDATE);
+	cfsetispeed(&opts, PMLIN_BAUDRATE);
+	cfsetospeed(&opts, PMLIN_BAUDRATE);
 
 	if (tcsetattr(com, TCSANOW, &opts) != 0) {
 		perror(port_name);
@@ -137,16 +137,16 @@ void pmlin_send_break() {
 	tcgetattr(g_pmlin_seril_port_fd, &opts);
 
 	// note! this relies on the non guaranteed fact that baudrate constant is actually the baudrate integer
-	cfsetispeed(&opts, PMLIN_BAURDATE);
-	cfsetospeed(&opts, PMLIN_BAURDATE);
+	cfsetispeed(&opts, PMLIN_BAUDRATE);
+	cfsetospeed(&opts, PMLIN_BAUDRATE);
 
 	if (tcsetattr(g_pmlin_seril_port_fd, TCSADRAIN, &opts) != 0) {
 		perror("abort()"__FILE__ "__LINE__");
 		abort();
 	}
 
-	cfsetispeed(&opts, PMLIN_BAURDATE / 2);
-	cfsetospeed(&opts, PMLIN_BAURDATE / 2);
+	cfsetispeed(&opts, PMLIN_BAUDRATE / 2);
+	cfsetospeed(&opts, PMLIN_BAUDRATE / 2);
 	tcsetattr(g_pmlin_seril_port_fd, TCSADRAIN, &opts); // wait for tx queue empty and then set baudrate
 
 	tcdrain(g_pmlin_seril_port_fd); // wait for chars to be sent (just in case)
@@ -155,9 +155,9 @@ void pmlin_send_break() {
 	char break_char = 0;
 	write(g_pmlin_seril_port_fd, &break_char, 1);
 	tcdrain(g_pmlin_seril_port_fd); // wait for the break char to be sent (does not realy work, hence next delay)
-	usleep(4*1000000 / (PMLIN_BAURDATE/2/10)); // 2 msec delay
-	cfsetispeed(&opts, PMLIN_BAURDATE);
-	cfsetospeed(&opts, PMLIN_BAURDATE);
+	usleep(4*1000000 / (PMLIN_BAUDRATE/2/10)); // 2 msec delay
+	cfsetispeed(&opts, PMLIN_BAUDRATE);
+	cfsetospeed(&opts, PMLIN_BAUDRATE);
 	tcsetattr(g_pmlin_seril_port_fd, TCSADRAIN, &opts); // wait for tx queue empty and then set baudrate
 
 }
